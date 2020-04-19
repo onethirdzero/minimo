@@ -1,45 +1,56 @@
-[![GitHub release](https://img.shields.io/github/release/MunifTanjim/minimo.svg?style=for-the-badge)](https://github.com/MunifTanjim/minimo/releases/latest)
-[![GitHub Release Date](https://img.shields.io/github/release-date/MunifTanjim/minimo.svg?style=for-the-badge)](https://github.com/MunifTanjim/minimo/releases)
-[![license](https://img.shields.io/github/license/MunifTanjim/minimo.svg?style=for-the-badge)](https://github.com/MunifTanjim/minimo/blob/master/LICENSE)
+A fork of minimo used to apply custom patches on top of the upstream theme.
 
-![Minimo – Minimalist theme for Hugo](https://raw.githubusercontent.com/MunifTanjim/minimo/master/images/tn.png)
+## Installation
 
-# Minimo
+This repo gets installed as a submodule.
 
-Minimalist theme for Hugo.
+```
+git submodule add https://github.com/onethirdzero/minimo themes/minimo
+git submodule init
+git submodule update
+```
 
-## Documentation
+## How to pull updates from this fork to the main repo
 
-Check the [Minimo Documentation](https://minimo.netlify.com/docs/) for detailed documentation of Minimo.
+The submodule in the main repo will see this repo as its `origin`. We'll need to remove the patches from its `master` so that it can cleanly pull from its `origin`.
 
-#### Getting Up & Running
+```
+$ cd <path to submodule in main repo>
+$ git reset --hard <parent of earliest custom patch>
+$ git pull --rebase
+```
 
-Follow these guides for getting your site up & running with Minimo:
+The pulled changes on `master` will already contain the custom patches on its tip.
 
-- **Install Minimo**: [Installation Guide](https://minimo.netlify.com/docs/installation)
-- **Setup Authors**: [Authors Setup Guide](https://minimo.netlify.com/docs/authors)
-- **Configure Widgets**: [Widgets Documentation](https://minimo.netlify.com/docs/widgets)
+## How custom patches are maintained
 
-#### Updating Minimo
+All custom changes are committed to the `custom` branch. These changes are then cherry picked onto the `master` branch. This is so that the custom changes can be easily rebased each time we need to pull updates from upstream.
 
-Follow the [**Updating Guide**](https://minimo.netlify.com/docs/updating) to update Minimo to its latest version.
+## How to pull updates from upstream
 
-After updating Minimo, always check that your site's **`config.toml`** file matches the latest [**`config.toml`** file](https://minimo.netlify.com/docs/config-file) format.
+Make sure that the most recent `master` commits match the ones on `custom`. Then, reset `master` to parent of the earliest custom patch.
 
-A good idea is to double check all the [Configuration settings](https://minimo.netlify.com/docs/installation#configuration-for-minimo) of Minimo.
+```
+$ git checkout master
+$ git reset --hard <parent of earliest custom patch>
+```
 
-## Development
+Pull from upstream.
 
-If you find a bug or want to request a new feature, feel free to open an issue.
+```
+$ git pull upstream master --rebase
+```
 
-## Changelog
+Rebase `custom` onto the tip of the updated `master`.
 
-[Changelog for Minimo](https://github.com/MunifTanjim/minimo/blob/master/CHANGELOG.md)
+```
+$ git checkout custom
+$ git rebase master
+```
 
-## License
+Lastly, re-cherry-pick the patches from `custom` onto master.
 
-Minimo is licensed under the MIT License. Check the [LICENSE](https://github.com/MunifTanjim/minimo/blob/master/LICENSE) file for details.
-
-The following resources are included/used in the theme:
-
-- [Feather](https://feather.netlify.com/) by Cole Bemis - Licensed under the [MIT License](https://github.com/colebemis/feather/blob/master/LICENSE).
+```
+$ git checkout master
+$ git cherry-pick -x <oldest custom patch>..<latest custom patch>
+```
