@@ -35,7 +35,19 @@ $ git push
 
 ## How to pull updates from this fork to the main repo
 
-The submodule in the main repo will see this repo as its `origin`. We'll need to remove the patches from its `master` so that it can cleanly pull from its `origin`.
+The submodule in the main repo will see this repo as its `origin`.
+
+### If this repo did not pull updates from upstream recently
+
+We can just update the submodule regularly:
+
+```
+$ git submodule update --remote
+```
+
+### If this repo pulled updates from upstream recently
+
+We'll need to remove the patches from the submodule's `master` so that it can cleanly pull from its `origin`.
 
 ```
 $ cd <path to submodule in main repo>
