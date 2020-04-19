@@ -10,6 +10,29 @@ git submodule init
 git submodule update
 ```
 
+## How to add new custom patches
+
+All custom changes are committed to the `custom` branch.
+
+```
+$ git checkout custom
+
+# Make changes and commit.
+```
+
+These changes are then cherry picked onto the `master` branch. This is so that the custom changes can be easily rebased each time we need to pull updates from upstream.
+
+```
+$ git checkout master
+$ git cherry-pick -x custom
+```
+
+Push your changes to `origin`.
+
+```
+$ git push
+```
+
 ## How to pull updates from this fork to the main repo
 
 The submodule in the main repo will see this repo as its `origin`. We'll need to remove the patches from its `master` so that it can cleanly pull from its `origin`.
@@ -21,10 +44,6 @@ $ git pull --rebase
 ```
 
 The pulled changes on `master` will already contain the custom patches on its tip.
-
-## How custom patches are maintained
-
-All custom changes are committed to the `custom` branch. These changes are then cherry picked onto the `master` branch. This is so that the custom changes can be easily rebased each time we need to pull updates from upstream.
 
 ## How to pull updates from upstream
 
@@ -52,5 +71,11 @@ Lastly, re-cherry-pick the patches from `custom` onto master.
 
 ```
 $ git checkout master
-$ git cherry-pick -x <oldest custom patch>..<latest custom patch>
+$ git cherry-pick -x custom
+```
+
+Push your changes to `origin`.
+
+```
+$ git push -f origin master
 ```
